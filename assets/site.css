@@ -1,0 +1,206 @@
+/* gabrielsidhom.com: a manuscript leaf. Vellum, iron-gall ink, red rubrics, one gilded initial. */
+
+:root {
+  --vellum: #f2e8d2;
+  --vellum-hi: #f8f1e1;
+  --ink: #1f1813;
+  --ink-soft: #4a3f35;
+  --faded: #8a7a68;
+  --rubric: #9b2a1d;
+  --rule: rgba(155, 42, 29, 0.28);
+  --gold-1: #8f6316;
+  --gold-2: #d9b45a;
+  --gold-3: #fbefc0;
+  --serif: "EB Garamond", "Cormorant Garamond", Garamond, "Iowan Old Style", Palatino, Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+html { background-color: var(--vellum); }
+
+/* Vellum: a soft light patch in the middle, darker edges, and a faint grain. Fixed layer so it works on phones too. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 50% 35%, var(--vellum-hi) 0%, rgba(248, 241, 225, 0) 62%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(120, 90, 50, 0.16) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.33 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;            /* Garamond runs small; this reads like ~16px in most fonts */
+  line-height: 1.55;
+  font-variant-numeric: oldstyle-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: rgba(155, 42, 29, 0.85); color: var(--vellum-hi); }
+
+#glyphs { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+/* The text block, ruled like a manuscript page */
+.leaf {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 11vh 30px 3rem 44px;
+}
+.leaf::before, .leaf::after {
+  content: "";
+  position: absolute;
+  top: 7vh;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+}
+.leaf::before { left: 18px; }
+.leaf::after { left: 22px; }
+
+/* Title block: gilded initial + name in small capitals */
+.title { display: flex; align-items: center; gap: 1rem; margin: 0 0 1.6rem; text-decoration: none; color: inherit; }
+.name {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  font-variant-caps: small-caps;
+}
+.name .rest { font-variant-caps: all-small-caps; letter-spacing: 0.08em; }
+
+/* Life in years, live: one colour throughout, a little wider than the name */
+.who { display: grid; justify-items: start; }
+.life {
+  contain: inline-size;               /* the name sets the width; this line just reaches slightly past it */
+  width: calc(100% + 2.2rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+  margin: 0.55rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+.life .bar { position: relative; flex: 1; min-width: 2.5rem; height: 3px; background: rgba(74, 63, 53, 0.18); }
+.life .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--ink-soft); }
+
+/* Smaller title block on inner pages */
+.title.small { margin-bottom: 2.2rem; gap: 0.85rem; }
+.title.small .name { font-size: 1.15rem; }
+.title.small:hover .name { color: var(--rubric); }
+
+/* Rubrics (red headings) */
+h1, h2 {
+  color: var(--rubric);
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  margin: 0 0 1rem;
+}
+h1 { font-size: 1.55rem; }
+h2 { font-size: 1.15rem; margin-top: 2.2rem; }
+
+p { margin: 0 0 1rem; }
+a { color: var(--rubric); text-decoration: none; border-bottom: 1px solid var(--rule); }
+a:hover { border-bottom-color: var(--rubric); }
+
+.about { font-size: 1.06rem; color: var(--ink); }
+
+/* Contents (home page) */
+.contents { display: flex; flex-direction: column; align-items: flex-start; gap: 0.55rem; margin: 2.1rem 0 0; }
+.contents a {
+  border: 0;
+  color: var(--ink);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  font-size: 1.15rem;
+}
+.contents a::after { content: " →"; color: var(--rubric); opacity: 0; transition: opacity 0.15s; }
+.contents a:hover { color: var(--rubric); }
+.contents a:hover::after { opacity: 1; }
+
+/* Back link on inner pages */
+.back {
+  display: inline-block;
+  margin: -1.2rem 0 1.6rem;
+  border: 0;
+  color: var(--faded);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.08em;
+  font-size: 1rem;
+}
+.back:hover { color: var(--rubric); }
+
+/* Entries with the date hanging in the margin */
+.entry { display: grid; grid-template-columns: 7.2rem 1fr; gap: 0 1.2rem; margin: 0 0 1.25rem; }
+.entry .when { color: var(--rubric); font-size: 0.9rem; text-align: right; padding-top: 0.12rem; font-variant-numeric: oldstyle-nums; }
+.entry .when .len { display: block; color: var(--faded); font-style: italic; font-size: 0.85rem; }
+.entry .what b { font-weight: 600; }
+.entry .dot { color: var(--rubric); padding: 0 0.5em; }
+.entry .what .org { font-style: italic; color: var(--ink-soft); }
+.entry .what p { margin: 0.1rem 0 0; color: var(--ink-soft); }
+.tag { font-style: italic; color: var(--rubric); font-size: 0.92rem; }
+
+/* Quotes */
+.quote { margin: 0 0 1.35rem; }
+.quote .q { font-style: italic; font-size: 1.06rem; }
+.quote .who { display: block; margin-top: 0.15rem; font-variant-caps: all-small-caps; letter-spacing: 0.07em; color: var(--faded); }
+.quote .who::before { content: "— "; color: var(--rubric); }
+.fleuron { text-align: center; color: var(--rubric); margin: 0.4rem 0 1.4rem; letter-spacing: 0.6em; }
+
+/* Footer */
+.foot {
+  margin-top: 3.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.6rem;
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+}
+.foot .sep { color: var(--faded); }
+.mail { display: inline-flex; align-items: baseline; gap: 0.35rem; }
+.copy {
+  position: relative;
+  top: 0.12em;
+  display: inline-grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--faded);
+  cursor: pointer;
+}
+.copy:hover, .copy:focus-visible { color: var(--rubric); }
+.copy svg { width: 0.9rem; height: 0.9rem; }
+.copied { font-style: italic; font-size: 0.85rem; color: var(--rubric); }
+
+@media (max-width: 620px) {
+  body { font-size: 17px; }
+  .leaf { padding: 7vh 20px 2.5rem 32px; }
+  .leaf::before { left: 12px; }
+  .leaf::after { left: 15px; }
+  .life { contain: none; width: auto; font-size: 0.8rem; gap: 0.2rem 0.4rem; }
+  .life .bar { flex: none; width: 2.4rem; min-width: 0; }
+  .name { font-size: 1.45rem; }
+  .entry { grid-template-columns: 1fr; }
+  .entry .when { text-align: left; padding: 0; }
+  .contents .d { display: none; }
+}
+
+
